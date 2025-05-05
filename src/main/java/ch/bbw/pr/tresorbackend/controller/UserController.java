@@ -49,6 +49,37 @@ public class UserController {
       this.passwordService = passwordService;
    }
 
+   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @PostMapping("/login")
+   public ResponseEntity<String> loginUser(@RequestBody RegisterUser loginRequest) {
+      System.out.println("UserController.loginUser: Login attempt for email: " + loginRequest.getEmail());
+
+      User user = userService.findByEmail(loginRequest.getEmail());
+
+      if (user == null) {
+         System.out.println("UserController.loginUser: User not found");
+         JsonObject obj = new JsonObject();
+         obj.addProperty("error", "User not found");
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Gson().toJson(obj));
+      }
+
+      boolean passwordMatches = passwordService.checkPassword(loginRequest.getPassword(), user.getPassword());
+
+      if (!passwordMatches) {
+         System.out.println("UserController.loginUser: Invalid password");
+         JsonObject obj = new JsonObject();
+         obj.addProperty("error", "Invalid password");
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Gson().toJson(obj));
+      }
+
+      // Optional: return additional user info or token
+      JsonObject obj = new JsonObject();
+      obj.addProperty("message", "Login successful");
+      obj.addProperty("userId", user.getId());
+      return ResponseEntity.ok(new Gson().toJson(obj));
+   }
+
+
    // build create User REST API
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping

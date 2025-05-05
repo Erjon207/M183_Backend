@@ -14,8 +14,14 @@ import java.security.NoSuchAlgorithmException;
 public class PasswordEncryptionService {
    //todo ergänzen!
 
-   public PasswordEncryptionService() {
-      //todo anpassen!
+   public boolean checkPassword(String rawPassword, String hashedPassword) {
+      try {
+         String hashedInput = hashPassword(rawPassword);
+         return hashedInput.equals(hashedPassword); //Es gibt keine decryption nur einen vergleich im gehashtem zustand
+      } catch (Exception e) {
+         //logger hinzufügen
+         return false;
+      }
    }
 
    public String hashPassword(String password) throws Exception {
