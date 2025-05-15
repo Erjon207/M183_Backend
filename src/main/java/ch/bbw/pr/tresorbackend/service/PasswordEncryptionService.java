@@ -1,10 +1,10 @@
 package ch.bbw.pr.tresorbackend.service;
 
+import ch.bbw.pr.tresorbackend.util.EncryptUtil;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * PasswordEncryptionService
@@ -25,19 +25,8 @@ public class PasswordEncryptionService {
    }
 
    public String hashPassword(String password) throws Exception {
-      try {
-         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-         byte[] encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+      EncryptUtil encryptUtil = new EncryptUtil(password);
 
-         StringBuilder hexString = new StringBuilder();
-         for (byte b : encodedHash) {
-            hexString.append(String.format("%02x", b));
-         }
-
-         return hexString.toString();
-      } catch (Exception e) {
-         //logger hinzufügen
-         throw new Exception("SHA-256 algorithm not found", e);
-      }
+      return encryptUtil.encrypt(password);
    }
 }

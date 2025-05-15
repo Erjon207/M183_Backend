@@ -36,7 +36,7 @@ public class SecretController {
    // create secret REST API
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping
-   public ResponseEntity<String> createSecret2(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) {
+   public ResponseEntity<String> createSecret2(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) throws Exception {
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
@@ -91,6 +91,8 @@ public class SecretController {
          } catch (EncryptionOperationNotPossibleException e) {
             System.out.println("SecretController.getSecretsByUserId " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
+         } catch (Exception e) {
+             throw new RuntimeException(e);
          }
       }
 
@@ -118,6 +120,8 @@ public class SecretController {
          } catch (EncryptionOperationNotPossibleException e) {
             System.out.println("SecretController.getSecretsByEmail " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
+         } catch (Exception e) {
+             throw new RuntimeException(e);
          }
       }
 
@@ -141,7 +145,7 @@ public class SecretController {
    public ResponseEntity<String> updateSecret(
          @PathVariable("id") Long secretId,
          @Valid @RequestBody NewSecret newSecret,
-         BindingResult bindingResult) {
+         BindingResult bindingResult) throws Exception {
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
