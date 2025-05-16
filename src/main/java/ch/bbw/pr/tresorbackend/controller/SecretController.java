@@ -36,7 +36,7 @@ public class SecretController {
    // create secret REST API
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping
-   public ResponseEntity<String> createSecret2(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) {
+   public ResponseEntity<String> createSecret2(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) throws Exception {
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
@@ -63,7 +63,6 @@ public class SecretController {
             user.getId(),
             new EncryptUtil(newSecret.getEncryptPassword()).encrypt(newSecret.getContent().toString())
       );
-      //save secret in db
       secretService.createSecret(secret);
       System.out.println("SecretController.createSecret, secret saved in db");
       JsonObject obj = new JsonObject();
@@ -88,7 +87,7 @@ public class SecretController {
       for(Secret secret: secrets) {
          try {
             secret.setContent(new EncryptUtil(credentials.getEncryptPassword()).decrypt(secret.getContent()));
-         } catch (EncryptionOperationNotPossibleException e) {
+         } catch (Exception e) {
             System.out.println("SecretController.getSecretsByUserId " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
          }
@@ -115,7 +114,7 @@ public class SecretController {
       for(Secret secret: secrets) {
          try {
             secret.setContent(new EncryptUtil(credentials.getEncryptPassword()).decrypt(secret.getContent()));
-         } catch (EncryptionOperationNotPossibleException e) {
+         } catch (Exception e) {
             System.out.println("SecretController.getSecretsByEmail " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
          }
@@ -141,7 +140,7 @@ public class SecretController {
    public ResponseEntity<String> updateSecret(
          @PathVariable("id") Long secretId,
          @Valid @RequestBody NewSecret newSecret,
-         BindingResult bindingResult) {
+         BindingResult bindingResult) throws Exception {
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
