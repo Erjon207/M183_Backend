@@ -63,9 +63,8 @@ public class UserController {
          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Gson().toJson(obj));
       }
 
-      boolean passwordMatches = passwordService.checkPassword(loginRequest.getPassword(), user.getPassword());
 
-      if (!passwordMatches) {
+      if (!passwordService.checkPassword(loginRequest.getPassword(), user.getPassword())) {
          System.out.println("UserController.loginUser: Invalid password");
          JsonObject obj = new JsonObject();
          obj.addProperty("error", "Invalid password");
