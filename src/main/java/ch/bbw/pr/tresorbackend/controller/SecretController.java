@@ -90,8 +90,6 @@ public class SecretController {
          } catch (Exception e) {
             System.out.println("SecretController.getSecretsByUserId " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
-         } catch (Exception e) {
-             throw new RuntimeException(e);
          }
       }
 
@@ -119,8 +117,6 @@ public class SecretController {
          } catch (Exception e) {
             System.out.println("SecretController.getSecretsByEmail " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
-         } catch (Exception e) {
-             throw new RuntimeException(e);
          }
       }
 
