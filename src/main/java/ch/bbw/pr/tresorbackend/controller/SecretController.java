@@ -63,7 +63,6 @@ public class SecretController {
             user.getId(),
             new EncryptUtil(newSecret.getEncryptPassword()).encrypt(newSecret.getContent().toString())
       );
-      //save secret in db
       secretService.createSecret(secret);
       System.out.println("SecretController.createSecret, secret saved in db");
       JsonObject obj = new JsonObject();
@@ -88,7 +87,7 @@ public class SecretController {
       for(Secret secret: secrets) {
          try {
             secret.setContent(new EncryptUtil(credentials.getEncryptPassword()).decrypt(secret.getContent()));
-         } catch (EncryptionOperationNotPossibleException e) {
+         } catch (Exception e) {
             System.out.println("SecretController.getSecretsByUserId " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
          } catch (Exception e) {
@@ -117,7 +116,7 @@ public class SecretController {
       for(Secret secret: secrets) {
          try {
             secret.setContent(new EncryptUtil(credentials.getEncryptPassword()).decrypt(secret.getContent()));
-         } catch (EncryptionOperationNotPossibleException e) {
+         } catch (Exception e) {
             System.out.println("SecretController.getSecretsByEmail " + e + " " + secret);
             secret.setContent("not encryptable. Wrong password?");
          } catch (Exception e) {
