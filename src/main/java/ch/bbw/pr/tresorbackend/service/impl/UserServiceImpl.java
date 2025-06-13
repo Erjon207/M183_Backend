@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
    public void deleteUser(Long userId) {
       userRepository.deleteById(userId);
    }
+
+   @Override
+   public List<String> validatePassword(String password) {
+      return null;
+   }
 }

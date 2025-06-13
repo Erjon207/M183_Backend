@@ -71,6 +71,12 @@ Dadurch kann man wenn man Zugriff auf die Datenbank bekommt nicht die Passwörte
 Um zu eine erfolgreichen Login auszuführen wird der momentan eingegebener Password gehäsht und mit dem in 
 der Datenbank verglichen. 
 
+## Password Stärke
+
+Dies ist etwas was man umsetzen soll um es Brute force algorythmen schwerer zu machen deine Passwörter zu knachen. 
+
+Hier findet man das Schema für 8 Zeichen lang und hat Gross- und Kleinschreibung, Zahlen, and speziele Zeichen.
+<pre>const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;</pre>
 
 
 
