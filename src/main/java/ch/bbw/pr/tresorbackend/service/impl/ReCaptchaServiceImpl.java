@@ -1,12 +1,19 @@
 package ch.bbw.pr.tresorbackend.service.impl;
 
 import ch.bbw.pr.tresorbackend.service.ReCaptchaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -23,16 +30,35 @@ public class ReCaptchaServiceImpl implements ReCaptchaService {
         if (token == null || token.isEmpty()) {
             return false;
         }
-        RestTemplate restTemplate = new RestTemplate();
-        String url = RECAPTCHA_VERIFY_URL + "?secret=" + recaptchaSecret + "&response=" + token;
+
         try {
-            Map<String, Object> response = restTemplate.postForObject(url, null, Map.class);
-            if (response != null && response.containsKey("success")) {
-                return (Boolean) response.get("success");
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("secret", recaptchaSecret);
+            params.add("response", token);
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+            ResponseEntity<Map> responseEntity = restTemplate.postForEntity(RECAPTCHA_VERIFY_URL, request, Map.class);
+            Map<String, Object> response = responseEntity.getBody();
+
+            if (response != null && Boolean.TRUE.equals(response.get("success"))) {
+                Double score = (Double) response.get("score");
+                String action = (String) response.get("action");
+
+                logger.info("ReCaptcha score: " + score + ", action: " + action);
+
+                return score != null && score >= 0.5 && "register".equals(action);
             }
         } catch (Exception e) {
             logger.error("ReCaptcha verification failed: " + e.getMessage());
         }
+
         return false;
     }
+
 }
