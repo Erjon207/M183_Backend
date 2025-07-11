@@ -29,5 +29,8 @@ public class RegisterUser {
    @NotEmpty (message="Password-confirmation is required.")
    private String passwordConfirmation;
 
+   @NotEmpty (message="Role-selection is required.")
+   private String admin;
+
    private String recaptchaToken;
 }

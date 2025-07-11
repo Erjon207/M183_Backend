@@ -106,18 +106,16 @@ public class UserController {
       }
       System.out.println("UserController.createUser: input validation passed");
 
-      //password validation
-      //todo ergänzen
-      System.out.println("UserController.createUser, password validation passed");
+      boolean admin = "true".equals(registerUser.getAdmin());
 
-      //transform registerUser to user
       User user = new User(
-            null,
-            registerUser.getFirstName(),
-            registerUser.getLastName(),
-            registerUser.getEmail(),
-            passwordService.hashPassword(registerUser.getPassword())
-            );
+              null,
+              registerUser.getFirstName(),
+              registerUser.getLastName(),
+              registerUser.getEmail(),
+              passwordService.hashPassword(registerUser.getPassword()),
+              admin
+      );
 
       User savedUser = userService.createUser(user);
       System.out.println("UserController.createUser, user saved in db");
